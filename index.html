@@ -5,7 +5,7 @@
     <title>Gamedev Canvas Workshop</title>
     <style>
     	* { padding: 0; margin: 0; }
-    	canvas { background: #eee; display: block; margin: 0 auto; }
+    	canvas { background: black; display: block; margin: 0 auto; }
     </style>
 </head>
 <body>
@@ -17,6 +17,8 @@
     var canvas = document.getElementById("myCanvas");
     var ctx = canvas.getContext("2d");
 
+    //set the score variable:
+    var score = 0;
     //ball variables:
     var ballRadius = 10;
     var x = canvas.width/2;
@@ -31,9 +33,69 @@
     var rightPressed = false;
     var leftPressed = false;
 
+    //brick variables:
+    var brickRowCount = 3;
+    var brickColumnCount = 5;
+    var brickWidth = 75;
+    var brickHeight = 20;
+    var brickPadding = 10;
+    var brickOffsetTop = 30;
+    var brickOffsetLeft = 30;
+    //Make the array of bricks:
+    var bricks = [];
+    for(c=0; c<brickColumnCount; c++) {
+        bricks[c] = [];
+    for(r=0; r<brickRowCount; r++) {
+        bricks[c][r] = { x: 0, y: 0, status: 1 };
+        }
+    }
+
     //Listen for keypress:
     document.addEventListener("keydown", keyDownHandler, false);
     document.addEventListener("keyup", keyUpHandler, false);
+
+    // function drawBricks(){
+    //     for(c = 0; c < brickColumnCount; c++){
+    //         for(r = 0; r < brickRowCount; r++){
+    //             //set the brick X and Y based on col, row and brick size:
+    //             var brickX = (c*(brickWidth+brickPadding)+brickOffsetLeft);
+    //             var brickY = (r*(brickHeight+brickPadding)+brickOffsetTop);
+    //             //set the brick colour based on row:
+    //             var brickColour;
+    //             switch(r) {
+    //                 case 0: brickColour = "green";
+    //                 case 1: brickColour = "white";
+    //                 case 2: brickColour = "yellow";
+    //             }
+    //             bricks[c][r].x = brickX;
+    //             bricks[c][r].y = brickY;
+    //             ctx.beginPath();
+    //             ctx.rect(brickX,brickY, brickWidth, brickHeight, brickColour);
+    //             ctx.fillStyle = brickColour;
+    //             ctx.fill();
+    //             ctx.closePath();
+    //         }
+    //     }
+    // }
+
+    function drawBricks() {
+        for(c=0; c<brickColumnCount; c++) {
+            for(r=0; r<brickRowCount; r++) {
+                if(bricks[c][r].status == 1) {
+                    var brickX = (c*(brickWidth+brickPadding))+brickOffsetLeft;
+                    var brickY = (r*(brickHeight+brickPadding))+brickOffsetTop;
+                    var brickColour = "yellow";
+                    bricks[c][r].x = brickX;
+                    bricks[c][r].y = brickY;
+                    ctx.beginPath();
+                    ctx.rect(brickX, brickY, brickWidth, brickHeight);
+                    ctx.fillStyle = brickColour;
+                    ctx.fill();
+                    ctx.closePath();
+                }
+            }
+        }
+    }
 
     function keyDownHandler(e) {
         if(e.keyCode == 39) {
@@ -53,16 +115,43 @@
         }
     }
 
+    //brick collision detection:
+    function collisionDetection() {
+        for(c=0; c<brickColumnCount; c++) {
+            for(r=0; r<brickRowCount; r++) {
+                var b = bricks[c][r];
+                // calculations
+                if(b.status == 1){
+                    if(x > b.x && x < b.x+brickWidth && y > b.y && y < b.y+brickHeight) {
+                        dy = -dy;
+                        b.status = 0;
+                        score ++;
+                        if(score == brickRowCount*brickColumnCount) {
+                            alert("YOU WIN, CONGRATULATIONS!");
+                            document.location.reload();
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    function drawScore() {
+        ctx.font = "16px Arial";
+        ctx.fillStyle = "#0095DD";
+        ctx.fillText("Score: "+score, 8, 20);
+    }
+
     //Ball draw function:
     function drawBall() {
     ctx.beginPath();
     ctx.arc(x, y, ballRadius, 0, Math.PI*2);
-    ctx.fillStyle = "#0095DD";
+    ctx.fillStyle = "red";
     ctx.fill();
     ctx.closePath();
     }
 
-    //Paddle Dras function:
+    //Paddle Draw function:
     function drawPaddle() {
     ctx.beginPath();
     ctx.rect(paddleX, canvas.height-paddleHeight, paddleWidth, paddleHeight);
@@ -77,8 +166,12 @@
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
         //draw ball and paddle:
+        drawBricks();
         drawBall();
         drawPaddle();
+        //check brick collision
+        collisionDetection();
+        drawScore();
 
         //check ball edge collision:
         if(x + dx > canvas.width-ballRadius || x + dx < ballRadius) {
@@ -111,6 +204,7 @@
         //move ball:
         x += dx;
         y += dy;
+
     }
 
     //call the draw function in ten millisecond intervals:
