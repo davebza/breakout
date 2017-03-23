@@ -1,9 +1,7 @@
 # Breakout!
-> Short blurb about what your product does.
+> This is a re-creation of the classic arcade game "Breakout" or "Arkanoid" to better understand 2d collision dectection and frame animation for JavaScript.
 
 ![](images/readmePreview.png)
-
-This is a re-creation of the classic arcade game "Breakout" or "Arkanoid" to better understand 2d collision dectection and frame animation for JavaScript.
 
 This is an HTML file with minimal css (contained in the head of the doc) and JavaScript. The user should recognize the game, but if not you will have to use your arrow keys to move a paddle left and right of the screen, to hit a ball up into brick targets at the top of the screen.
 
