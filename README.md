@@ -15,7 +15,7 @@ Download the file, and open it in a web browser. Chrome is recommended.
 
 ## Meta
 
-Your Name – [@DaveBza](https://twitter.com/DaveBza) – dave@davidbrownhk.com
+Dave Brown – [@DaveBza](https://twitter.com/DaveBza) – dave@davidbrownhk.com
 
 Distributed under the XYZ license. See ``LICENSE`` for more information.
 
